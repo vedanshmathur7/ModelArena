@@ -2,12 +2,12 @@
 title: ModelArena
 emoji: ⚖️
 colorFrom: blue
-colorTo: orange
+colorTo: indigo
 sdk: docker
 app_port: 7860
 pinned: false
 license: mit
-short_description: Side-by-side OSS (Qwen/Ollama) vs frontier (Llama/Groq) AI assistants
+short_description: OSS vs frontier AI assistants side-by-side
 ---
 
 # Comparative AI Personal Assistants

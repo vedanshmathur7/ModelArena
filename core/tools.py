@@ -106,6 +106,40 @@ def get_tools_definition() -> List[Dict[str, Any]]:
                 },
             },
         },
+        {
+            "type": "function",
+            "function": {
+                "name": "brave_search",
+                "description": "Search the web for current or historical information. Use this only when the query requires searching for external or up-to-date information.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "query": {
+                            "type": "string",
+                            "description": "The search query."
+                        }
+                    },
+                    "required": ["query"],
+                },
+            },
+        },
+        {
+            "type": "function",
+            "function": {
+                "name": "web_search",
+                "description": "Search the web for current or historical information. Use this only when the query requires searching for external or up-to-date information.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "query": {
+                            "type": "string",
+                            "description": "The search query."
+                        }
+                    },
+                    "required": ["query"],
+                },
+            },
+        }
     ]
 
 
@@ -117,6 +151,10 @@ def execute_tool(name: str, arguments: Dict[str, Any]) -> str:
     elif name == "calculate":
         expression = arguments.get("expression", "")
         return calculate(expression)
+    elif name in ("brave_search", "web_search"):
+        query = arguments.get("query", "")
+        logger.info("Mock search executed for query: %s", query)
+        return f"Search results for '{query}': No search connection is active. Please answer this query directly using your existing knowledge, or explain that you do not have search capability."
     else:
         return f"Error: Unknown tool '{name}'."
 

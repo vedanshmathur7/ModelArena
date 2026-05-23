@@ -19,9 +19,9 @@ This repository implements and evaluates two personal assistants with the same u
 
 Both assistants support multi-turn conversation, short-term conversational memory, basic assistant behavior, safety filtering, latency logging, and a side-by-side Streamlit comparison interface.
 
-🚀 **Live Interactive Demo:**  
+**Live Interactive Demo:**  
 The project is publicly deployed and accessible on Hugging Face Spaces at:  
-👉 **[https://huggingface.co/spaces/vedanshmathur7/ModelArena](https://huggingface.co/spaces/vedanshmathur7/ModelArena)**
+**[https://huggingface.co/spaces/vedanshmathur7/ModelArena](https://huggingface.co/spaces/vedanshmathur7/ModelArena)**
 
 ### How to use the Live Demo:
 1. **Public Access:** Anyone can open the link in a browser to use the side-by-side chat interface.

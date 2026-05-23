@@ -1,3 +1,15 @@
+---
+title: ModelArena
+emoji: ⚖️
+colorFrom: blue
+colorTo: orange
+sdk: docker
+app_port: 7860
+pinned: false
+license: mit
+short_description: Side-by-side OSS (Qwen/Ollama) vs frontier (Llama/Groq) AI assistants
+---
+
 # Comparative AI Personal Assistants
 
 This repository implements and evaluates two personal assistants with the same user experience and capabilities:

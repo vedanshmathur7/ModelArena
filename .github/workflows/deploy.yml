@@ -18,6 +18,7 @@ jobs:
           github_repo_id: ${{ github.repository }}
           # Change username if your HF account name differs from GitHub
           huggingface_repo_id: vedanshmathur7/ModelArena
+          # HF Space secrets (OPENAI_API_KEY, etc.) are set in HF Settings, not here.
           hf_token: ${{ secrets.HF_TOKEN }}
           repo_type: space
           space_sdk: docker

@@ -5,6 +5,7 @@ colorFrom: blue
 colorTo: indigo
 sdk: docker
 app_port: 7860
+startup_duration_timeout: 45m
 pinned: false
 short_description: OSS vs frontier AI assistants side-by-side
 ---

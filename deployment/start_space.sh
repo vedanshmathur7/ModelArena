@@ -19,15 +19,15 @@ for _ in $(seq 1 60); do
     sleep 1
 done
 
-echo "Pulling OSS model: ${OSS_MODEL}"
-ollama pull "${OSS_MODEL}"
-
-echo "Starting Streamlit app..."
+echo "Starting Streamlit app (model pull runs in background)..."
 streamlit run apps/comparison_app.py \
     --server.port="${STREAMLIT_SERVER_PORT:-7860}" \
     --server.address="${STREAMLIT_SERVER_ADDRESS:-0.0.0.0}" \
     --server.headless=true &
 STREAMLIT_PID="$!"
+
+echo "Pulling OSS model in background: ${OSS_MODEL}"
+ollama pull "${OSS_MODEL}" &
 
 trap 'kill "${STREAMLIT_PID}" "${OLLAMA_PID}" 2>/dev/null || true' INT TERM
 wait "${STREAMLIT_PID}"

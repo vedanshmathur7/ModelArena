@@ -19,6 +19,15 @@ This repository implements and evaluates two personal assistants with the same u
 
 Both assistants support multi-turn conversation, short-term conversational memory, basic assistant behavior, safety filtering, latency logging, and a side-by-side Streamlit comparison interface.
 
+🚀 **Live Interactive Demo:**  
+The project is publicly deployed and accessible on Hugging Face Spaces at:  
+👉 **[https://huggingface.co/spaces/vedanshmathur7/ModelArena](https://huggingface.co/spaces/vedanshmathur7/ModelArena)**
+
+### How to use the Live Demo:
+1. **Public Access:** Anyone can open the link in a browser to use the side-by-side chat interface.
+2. **Cold Starts:** Since it uses Hugging Face's free tier, the Space may go to sleep after inactivity. If it is building/loading, wait 1-3 minutes for the local Ollama backend to pull `qwen2.5:1.5b` and launch the Streamlit server.
+3. **Duplicating for Private Use:** To use your own API keys or customize the model routing privately, click the **three dots** in the top-right corner of the Hugging Face interface and select **Duplicate this Space**. Add your `OPENAI_API_KEY` (Groq or OpenAI compatible key) to the Space secrets.
+
 ## Deliverables
 
 | Requirement | Location |

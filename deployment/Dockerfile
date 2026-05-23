@@ -26,6 +26,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     curl \
     procps \
+    zstd \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Ollama. The model is pulled at container startup so the image stays small.

@@ -99,6 +99,10 @@ class OSSAssistant(BaseAssistant):
         if self._client is None:
             return self._fallback_response()
 
+        # Inject tool output if applicable
+        from core.tools import check_and_inject_tools
+        messages = check_and_inject_tools(messages)
+
         try:
             response = self._client.chat(
                 model=self.model_name,
@@ -117,6 +121,10 @@ class OSSAssistant(BaseAssistant):
         if self._client is None:
             yield self._fallback_response()
             return
+
+        # Inject tool output if applicable
+        from core.tools import check_and_inject_tools
+        messages = check_and_inject_tools(messages)
 
         try:
             stream = self._client.chat(
@@ -219,6 +227,10 @@ class HFAssistant(BaseAssistant):
             return "\n".join(parts)
 
     def generate_response(self, messages: List[dict]) -> str:
+        # Inject tool output if applicable
+        from core.tools import check_and_inject_tools
+        messages = check_and_inject_tools(messages)
+
         try:
             self._load_model()
             prompt = self._messages_to_text(messages)
@@ -234,6 +246,10 @@ class HFAssistant(BaseAssistant):
 
     def stream_response(self, messages: List[dict]) -> Generator[str, None, None]:
         """HF streaming via TextIteratorStreamer."""
+        # Inject tool output if applicable
+        from core.tools import check_and_inject_tools
+        messages = check_and_inject_tools(messages)
+
         try:
             from transformers import TextIteratorStreamer
             import threading
@@ -315,13 +331,63 @@ class FrontierAssistant(BaseAssistant):
             return "[Frontier model unavailable — check API key and openai package]"
 
         try:
+            # Check for native function/tool calling support
+            from core.tools import get_tools_definition, execute_tool
+            tools = get_tools_definition()
+            import json
+
             response = self._client.chat.completions.create(
                 model=self.model_name,
                 messages=messages,
                 max_tokens=self.max_new_tokens,
                 temperature=self.temperature,
+                tools=tools,
+                tool_choice="auto",
             )
-            return response.choices[0].message.content or ""
+            
+            message = response.choices[0].message
+            if message.tool_calls:
+                # Copy messages to avoid modifying caller's history list in-place
+                messages_copy = list(messages)
+                messages_copy.append({
+                    "role": "assistant",
+                    "content": message.content,
+                    "tool_calls": [
+                        {
+                            "id": tc.id,
+                            "type": "function",
+                            "function": {
+                                "name": tc.function.name,
+                                "arguments": tc.function.arguments
+                            }
+                        } for tc in message.tool_calls
+                    ]
+                })
+                
+                for tool_call in message.tool_calls:
+                    func_name = tool_call.function.name
+                    try:
+                        func_args = json.loads(tool_call.function.arguments)
+                    except Exception:
+                        func_args = {}
+                    tool_output = execute_tool(func_name, func_args)
+                    
+                    messages_copy.append({
+                        "role": "tool",
+                        "tool_call_id": tool_call.id,
+                        "name": func_name,
+                        "content": tool_output
+                    })
+                
+                final_response = self._client.chat.completions.create(
+                    model=self.model_name,
+                    messages=messages_copy,
+                    max_tokens=self.max_new_tokens,
+                    temperature=self.temperature,
+                )
+                return final_response.choices[0].message.content or ""
+            
+            return message.content or ""
         except Exception as exc:
             logger.error("OpenAI generation error: %s", exc)
             return f"[Frontier model error: {exc}]"
@@ -332,17 +398,93 @@ class FrontierAssistant(BaseAssistant):
             return
 
         try:
+            from core.tools import get_tools_definition, execute_tool
+            tools = get_tools_definition()
+            import json
+
             stream = self._client.chat.completions.create(
                 model=self.model_name,
                 messages=messages,
                 max_tokens=self.max_new_tokens,
                 temperature=self.temperature,
+                tools=tools,
+                tool_choice="auto",
                 stream=True,
             )
+            
+            tool_calls_data = []
+            tool_calls_detected = False
+            
             for chunk in stream:
+                if not chunk.choices:
+                    continue
                 delta = chunk.choices[0].delta
+                if delta.tool_calls:
+                    tool_calls_detected = True
+                    for tc_delta in delta.tool_calls:
+                        idx = tc_delta.index
+                        if len(tool_calls_data) <= idx:
+                            tool_calls_data.append({
+                                "id": tc_delta.id or "",
+                                "name": tc_delta.function.name or "",
+                                "arguments": tc_delta.function.arguments or "",
+                            })
+                        else:
+                            if tc_delta.id:
+                                tool_calls_data[idx]["id"] = tc_delta.id
+                            if tc_delta.function.name:
+                                tool_calls_data[idx]["name"] += tc_delta.function.name
+                            if tc_delta.function.arguments:
+                                tool_calls_data[idx]["arguments"] += tc_delta.function.arguments
+                
                 if delta.content:
                     yield delta.content
+            
+            if tool_calls_detected:
+                messages_copy = list(messages)
+                
+                assistant_tool_calls = []
+                for tc in tool_calls_data:
+                    assistant_tool_calls.append({
+                        "id": tc["id"],
+                        "type": "function",
+                        "function": {
+                            "name": tc["name"],
+                            "arguments": tc["arguments"]
+                        }
+                    })
+                
+                messages_copy.append({
+                    "role": "assistant",
+                    "content": None,
+                    "tool_calls": assistant_tool_calls
+                })
+                
+                for tc in tool_calls_data:
+                    func_name = tc["name"]
+                    try:
+                        func_args = json.loads(tc["arguments"])
+                    except Exception:
+                        func_args = {}
+                    tool_output = execute_tool(func_name, func_args)
+                    
+                    messages_copy.append({
+                        "role": "tool",
+                        "tool_call_id": tc["id"],
+                        "name": func_name,
+                        "content": tool_output
+                    })
+                
+                final_stream = self._client.chat.completions.create(
+                    model=self.model_name,
+                    messages=messages_copy,
+                    max_tokens=self.max_new_tokens,
+                    temperature=self.temperature,
+                    stream=True,
+                )
+                for chunk in final_stream:
+                    if chunk.choices and chunk.choices[0].delta.content:
+                        yield chunk.choices[0].delta.content
         except Exception as exc:
             logger.error("OpenAI streaming error: %s", exc)
             yield f"[Frontier streaming error: {exc}]"

@@ -342,6 +342,49 @@ with tab_eval:
             })
         st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
 
+    # --- Operational Cost & Latency comparison ---
+    st.markdown("### Deployment Costs & Latency Analysis")
+    st.markdown(
+        "When taking these assistants to production, you have several deployment paths for the Open Source Model. "
+        "Here is an operational cost-latency comparison table for running **Qwen2.5 (1.5B)** vs. the **Frontier API**:"
+    )
+    cost_data = [
+        {
+            "Deployment Tier": "Hugging Face Spaces (CPU Basic)",
+            "Hardware Resources": "2 vCPU, 16GB RAM (Shared)",
+            "Running Cost ($/mo)": "$0.00 (Free Tier)",
+            "Avg. Latency (Qwen 1.5B)": "10.0 - 15.0 seconds",
+            "Cold Start": "1 - 3 minutes",
+            "Recommendation / Use Case": "Hobbyist demos, low-concurrency testing. Unsuitable for production."
+        },
+        {
+            "Deployment Tier": "Serverless GPU (RunPod / Modal)",
+            "Hardware Resources": "NVIDIA L4 / RTX 4090 (24GB VRAM)",
+            "Running Cost ($/mo)": "~$0.20 - $0.80 per active hour",
+            "Avg. Latency (Qwen 1.5B)": "200 - 500 ms",
+            "Cold Start": "10 - 30 seconds",
+            "Recommendation / Use Case": "Variable production traffic. Extremely cost-effective for medium workloads."
+        },
+        {
+            "Deployment Tier": "Dedicated Cloud GPU (AWS/GCP)",
+            "Hardware Resources": "NVIDIA A10G (g5.xlarge, 24GB VRAM)",
+            "Running Cost ($/mo)": "~$730.00 / month (Flat-rate)",
+            "Avg. Latency (Qwen 1.5B)": "100 - 300 ms",
+            "Cold Start": "0 seconds (Always-on)",
+            "Recommendation / Use Case": "High, steady-state production traffic where serverless cold starts are unacceptable."
+        },
+        {
+            "Deployment Tier": "Hosted Frontier API (Groq LPU)",
+            "Hardware Resources": "Shared LPU Infrastructure",
+            "Running Cost ($/mo)": "$0.05/1M prompt, $0.08/1M completion tokens",
+            "Avg. Latency (Llama 3.1 8B)": "150 - 300 ms",
+            "Cold Start": "0 seconds",
+            "Recommendation / Use Case": "Most cost-effective starting point. Scale-to-millions without server management."
+        }
+    ]
+    st.dataframe(pd.DataFrame(cost_data), use_container_width=True, hide_index=True)
+
+
 # ---------------------------------------------------------------------------
 # Observability tab
 # ---------------------------------------------------------------------------

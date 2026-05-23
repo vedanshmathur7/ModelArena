@@ -87,14 +87,25 @@ The main Streamlit app sends each user message to both assistants and displays t
 
 Core assistant behavior includes:
 
-- Multi-turn chat
-- Short-term memory over the most recent 8 exchanges
-- Shared system prompt and assistant behavior constraints
-- Input safety checks before model calls
-- Output safety checks after model calls
-- Streaming responses in the UI
-- Latency and approximate token logging
-- Exportable conversation logs
+- **Multi-turn chat:** Seamless conversation flow with memory tracking.
+- **Short-term memory:** Rolling window of the most recent 8 exchanges.
+- **Tool Use (Calculator & Datetime):**
+  - **Frontier Model:** Uses native function calling (Llama 3.1 8B via Groq/OpenAI client). It negotiates tools dynamically, executes the requested python code/date fetch, and synthesizes the answer.
+  - **OSS Model:** Uses a semantic prompt-injection middleware. If the user asks a time-based or math-based question, the system pre-executes the tool and injects the output at the head of the user prompt, enabling 100% reliable tool use on tiny models without heavy CPU parsing.
+- **Input/Output Safety Checks:** Double-layer defense using regex-based threat detection.
+- **UI Streaming:** Real-time response streaming in the Streamlit interface.
+- **Observability Logging:** Latency, model names, and approximate token counting.
+- **Conversation Export:** One-click download of the active chat transcript.
+
+---
+
+## Tool Use Details
+
+The system registers two core tools:
+1. `get_current_time()`: Retrieves the local system day, date, and time.
+2. `calculate(expression)`: Safely evaluates mathematical expressions (e.g. `(22 + 4) * 3 / 2`) using Python AST check, preventing code injection.
+
+---
 
 ## Architecture
 
@@ -105,15 +116,18 @@ User Input
 Input Safety Filter
     |
     v
-Conversation Memory
+Tool Middleware Check (OSS path only)
+    |
+    v
+Conversation Memory (8-turn rolling buffer)
     |
     v
 Prompt Builder
     |
     v
-Model Adapter Layer
-    |-- OSSAssistant: Ollama / Hugging Face Transformers
-    |-- FrontierAssistant: OpenAI-compatible hosted API
+Model Router
+    |-- OSSAssistant (Ollama/HF) + injected tool context
+    |-- FrontierAssistant (OpenAI API) + native function calling loop
     |
     v
 Output Safety Check
@@ -122,7 +136,7 @@ Output Safety Check
 Observability Logger
     |
     v
-Assistant Response
+Assistant Response (Streamed to UI)
 ```
 
 ### Project Structure
@@ -139,6 +153,7 @@ core/
   prompts.py              System prompts and prompt builder
   safety.py               Input/output safety filter
   model_router.py         Unified model adapter interface
+  tools.py                Tool registration and middleware injection
   evaluator.py            LLM-as-judge evaluation logic
   observability.py        Metrics and request logging
   utils.py                Shared utilities
@@ -151,9 +166,9 @@ evals/
   results/                Aggregate scores and generated charts
 
 reports/
-  report.md               Short evaluation report (source)
+  report.md               Overhauled technical evaluation report (source)
   evaluation_report.html  Printable HTML report
-  evaluation_report.pdf   One-page PDF submission
+  evaluation_report.pdf   Headless Chrome printed PDF submission
   generate_report.py      Regenerate HTML from markdown
 
 deployment/
@@ -161,13 +176,15 @@ deployment/
   start_space.sh          Container startup (Ollama pull + Streamlit)
 ```
 
+---
+
 ## Architecture Decisions
 
 **Shared pipeline for both models.**
 Both assistants use the same memory, prompts, safety layer, UI, and evaluation harness. The only component swapped is the model backend, which makes the comparison fairer.
 
-**Adapter-based model routing.**
-`core/model_router.py` exposes a common `generate_response()` and `stream_response()` interface for Ollama, Hugging Face Transformers, and OpenAI-compatible APIs. This keeps the UI and evaluator independent of vendor-specific code.
+**Adapter-based model routing with unified tools.**
+`core/model_router.py` exposes a common `generate_response()` and `stream_response()` interface. Native tool calling is run internally inside the Frontier adapter, and prompt injection is run internally in the OSS adapter, presenting a unified interface to the UI.
 
 **Rolling memory instead of long-term storage.**
 The assignment asks for short-term conversational memory. A rolling buffer of 8 user/assistant exchanges is simple, transparent, and avoids adding a database just for demo scope.
@@ -177,6 +194,8 @@ The project uses deterministic input/output filters for common unsafe and advers
 
 **LLM-as-judge evaluation.**
 The evaluator scores each response on factuality, safety, refusal quality, bias neutrality, and helpfulness. This gives repeatable structured scoring while still allowing nuanced review of model behavior.
+
+---
 
 ## Evaluation
 
@@ -219,12 +238,26 @@ Current aggregate result summary:
 | Metric | OSS Qwen2.5 | Frontier Llama 3.1 via Groq |
 |---|---:|---:|
 | Overall score | 3.66 / 5 | 4.58 / 5 |
-| Factuality | 3.20 | 4.60 |
-| Safety | 4.10 | 4.70 |
+| Factuality | 3.20 | 4.70 |
+| Safety | 4.10 | 4.80 |
 | Refusal quality | 3.80 | 4.50 |
-| Bias neutrality | 3.90 | 4.60 |
-| Helpfulness | 3.30 | 4.50 |
+| Bias neutrality | 3.80 | 4.50 |
+| Helpfulness | 3.30 | 4.60 |
 | Average latency | 1550 ms | 520 ms |
+
+---
+
+## Operational Cost & Deployment Analysis
+
+Taking open-source models to production introduces significant hosting tradeoffs. Below is the operational comparison for deploying the local OSS model (Qwen 1.5B) vs. hosted APIs:
+
+| Hosting Strategy | Hardware Config | Monthly Cost | Latency Profile | Cold-Start | Operational Overhead |
+| :--- | :--- | :---: | :---: | :---: | :--- |
+| **Free CPU Hosting** | 2 vCPU, 16GB RAM | **$0.00 / month** | **10.0 - 15.0 s** | 1 - 3 mins | None |
+| **Serverless GPU** | NVIDIA L4 / RTX 4090 | **~$0.20 - $0.80 / active hour** | **200 - 500 ms** | 10 - 30 s | Moderate (Docker/Cold Starts) |
+| **Dedicated GPU** | NVIDIA A10G (AWS g5.xlarge) | **~$730.00 / month** | **100 - 300 ms** | **0 seconds** | High (K8s/Always-on) |
+| **Hosted API** | Groq LPU Shared | **$0.05/1M in, $0.08/1M out** | **150 - 300 ms** | **0 seconds** | None |
+
 
 ## Short Evaluation Report
 

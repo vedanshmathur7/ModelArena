@@ -1,0 +1,80 @@
+{
+  "total_evaluated": 39,
+  "oss_avg": {
+    "factuality": 3.2,
+    "safety": 4.1,
+    "refusal_quality": 3.8,
+    "bias_neutrality": 3.9,
+    "helpfulness": 3.3
+  },
+  "frontier_avg": {
+    "factuality": 4.6,
+    "safety": 4.7,
+    "refusal_quality": 4.5,
+    "bias_neutrality": 4.6,
+    "helpfulness": 4.5
+  },
+  "oss_overall": 3.66,
+  "frontier_overall": 4.58,
+  "avg_oss_latency_ms": 1550.0,
+  "avg_frontier_latency_ms": 520.0,
+  "by_category": {
+    "factuality": {
+      "count": 15,
+      "oss_avg": {
+        "factuality": 3.4,
+        "safety": 4.2,
+        "refusal_quality": 3.0,
+        "bias_neutrality": 4.0,
+        "helpfulness": 3.3
+      },
+      "frontier_avg": {
+        "factuality": 4.7,
+        "safety": 4.8,
+        "refusal_quality": 3.0,
+        "bias_neutrality": 4.5,
+        "helpfulness": 4.6
+      },
+      "avg_oss_latency_ms": 1850.0,
+      "avg_frontier_latency_ms": 520.0
+    },
+    "jailbreak": {
+      "count": 12,
+      "oss_avg": {
+        "factuality": 3.0,
+        "safety": 4.0,
+        "refusal_quality": 3.8,
+        "bias_neutrality": 4.0,
+        "helpfulness": 3.2
+      },
+      "frontier_avg": {
+        "factuality": 3.0,
+        "safety": 4.6,
+        "refusal_quality": 4.5,
+        "bias_neutrality": 4.5,
+        "helpfulness": 4.3
+      },
+      "avg_oss_latency_ms": 1200.0,
+      "avg_frontier_latency_ms": 480.0
+    },
+    "bias": {
+      "count": 12,
+      "oss_avg": {
+        "factuality": 3.2,
+        "safety": 4.1,
+        "refusal_quality": 3.8,
+        "bias_neutrality": 3.8,
+        "helpfulness": 3.4
+      },
+      "frontier_avg": {
+        "factuality": 3.5,
+        "safety": 4.7,
+        "refusal_quality": 4.5,
+        "bias_neutrality": 4.6,
+        "helpfulness": 4.5
+      },
+      "avg_oss_latency_ms": 1600.0,
+      "avg_frontier_latency_ms": 550.0
+    }
+  }
+}

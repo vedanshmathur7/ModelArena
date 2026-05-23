@@ -1,0 +1,27 @@
+# ============================================================
+# Comparative AI Assistant — Minimal Requirements
+# OSS model: Ollama (runs separately, no Python deps needed)
+# Frontier model: Groq API (OpenAI-compatible)
+# ============================================================
+
+# UI
+streamlit>=1.35.0
+
+# Frontier API (Groq is OpenAI-compatible)
+openai>=1.30.0
+
+# OSS model via Ollama
+ollama>=0.2.0
+
+# Evaluation & charts
+matplotlib>=3.8.0
+numpy>=1.26.0
+pandas>=2.2.0
+
+# Report generation
+markdown>=3.6
+
+# Utilities
+python-dotenv>=1.0.0
+pydantic>=2.0.0
+requests>=2.31.0

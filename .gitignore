@@ -1,0 +1,128 @@
+# ============================================================
+# Comparative AI Assistant — .gitignore
+# ============================================================
+
+# ------------------------------------
+# Secrets & environment
+# ------------------------------------
+.env
+.env.local
+.env.*.local
+*.env
+!.env.example
+
+# ------------------------------------
+# Python
+# ------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+var/
+sdist/
+develop-eggs/
+.installed.cfg
+lib/
+lib64/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+
+# ------------------------------------
+# Virtual environments
+# ------------------------------------
+venv/
+.venv/
+env/
+ENV/
+.env/
+virtualenv/
+
+# ------------------------------------
+# Logs & runtime data
+# ------------------------------------
+logs/
+*.log
+*.jsonl
+
+# ------------------------------------
+# Model weights & caches
+# ------------------------------------
+# HuggingFace model cache
+~/.cache/huggingface/
+.cache/
+models/
+*.bin
+*.safetensors
+*.gguf
+*.ggml
+*.pt
+*.pth
+*.ckpt
+
+# Ollama models are stored system-wide, not in project
+
+# ------------------------------------
+# Evaluation results
+# Keep aggregate_scores.json and charts (submission deliverables).
+# Ignore per-run dumps and temp output from evaluation_runner.py.
+# ------------------------------------
+evals/results/tmp/
+evals/results/eval_results_*.json
+
+# ------------------------------------
+# Streamlit
+# ------------------------------------
+.streamlit/secrets.toml
+
+# ------------------------------------
+# IDE, editor & local tooling
+# ------------------------------------
+.vscode/
+.idea/
+.cursor/
+.agents/
+.codex/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ------------------------------------
+# Testing
+# ------------------------------------
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+nosetests.xml
+coverage.xml
+*.cover
+
+# ------------------------------------
+# Docker
+# ------------------------------------
+
+# ------------------------------------
+# Jupyter (if used for analysis)
+# ------------------------------------
+.ipynb_checkpoints/
+*.ipynb
+
+# ------------------------------------
+# Generated report files are submission deliverables.
+# ------------------------------------
+
+# ------------------------------------
+# Screenshots (add manually, don't auto-commit)
+# ------------------------------------
+screenshots/

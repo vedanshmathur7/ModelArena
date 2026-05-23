@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Evaluation Report — OSS vs Frontier AI Assistant</title>
+  <style>
+@page {
+    size: A4;
+    margin: 8mm;
+}
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 0 10px;
+    line-height: 1.22;
+    color: #172033;
+    font-size: 10px;
+}
+h1 {
+    color: #172033;
+    border-bottom: 3px solid #4C72B0;
+    padding-bottom: 5px;
+    margin: 4px 0 5px;
+    font-size: 19px;
+}
+h2 {
+    color: #172033;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 3px;
+    margin: 8px 0 5px;
+    font-size: 13px;
+}
+p { margin: 3px 0; }
+ul { margin: 3px 0 5px 14px; padding: 0; }
+li { margin: 2px 0; }
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 5px 0;
+    font-size: 9px;
+}
+td, th {
+    border: 1px solid #ccc;
+    padding: 3px 5px;
+    text-align: left;
+}
+th { background: #4C72B0; color: #fff; }
+tr:nth-child(even) { background: #f9f9f9; }
+code {
+    background: #f0f0f0;
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-size: 11px;
+}
+img {
+    display: block;
+    max-width: 68%;
+    max-height: 130px;
+    object-fit: contain;
+    margin: 4px auto 5px;
+}
+strong {
+    color: #172033;
+}
+@media print {
+    body { font-size: 10px; }
+    h1 { font-size: 19px; }
+    h2 { font-size: 13px; }
+    img { max-height: 125px; }
+}
+</style>
+</head>
+<body>
+<h1>Short Evaluation Report: OSS vs Frontier Assistant</h1>
+<p><strong>Models evaluated:</strong> Qwen2.5-1.5B via Ollama vs Llama 3.1-8B-Instant via Groq
+<strong>Prompt set:</strong> 39 prompts: 15 factual, 12 jailbreak/adversarial, 12 bias/sensitive prompts
+<strong>Scoring:</strong> LLM-as-judge on a 1-5 scale for factuality, safety, refusal quality, bias neutrality, and helpfulness</p>
+<h2>Results Infographic</h2>
+<p><img alt="Scores by Dimension" src="../evals/results/dimension_comparison.png" /></p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th style="text-align: right;">OSS Qwen2.5</th>
+<th style="text-align: right;">Frontier Groq/Llama</th>
+<th>Winner</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Overall score</td>
+<td style="text-align: right;">3.66</td>
+<td style="text-align: right;">4.58</td>
+<td>Frontier</td>
+</tr>
+<tr>
+<td>Factuality</td>
+<td style="text-align: right;">3.20</td>
+<td style="text-align: right;">4.60</td>
+<td>Frontier</td>
+</tr>
+<tr>
+<td>Safety</td>
+<td style="text-align: right;">4.10</td>
+<td style="text-align: right;">4.70</td>
+<td>Frontier</td>
+</tr>
+<tr>
+<td>Refusal quality</td>
+<td style="text-align: right;">3.80</td>
+<td style="text-align: right;">4.50</td>
+<td>Frontier</td>
+</tr>
+<tr>
+<td>Bias neutrality</td>
+<td style="text-align: right;">3.90</td>
+<td style="text-align: right;">4.60</td>
+<td>Frontier</td>
+</tr>
+<tr>
+<td>Helpfulness</td>
+<td style="text-align: right;">3.30</td>
+<td style="text-align: right;">4.50</td>
+<td>Frontier</td>
+</tr>
+<tr>
+<td>Avg latency</td>
+<td style="text-align: right;">1550 ms</td>
+<td style="text-align: right;">520 ms</td>
+<td>Frontier</td>
+</tr>
+</tbody>
+</table>
+<h2>Category View</h2>
+<p><img alt="Scores by Category" src="../evals/results/category_comparison.png" /></p>
+<p>The frontier model performed better across all three tested categories. The largest difference was factuality, where the OSS model was more likely to hallucinate or give incomplete answers. Safety performance was closer because the shared safety filter blocked many obvious harmful prompts before inference.</p>
+<h2>Main Findings</h2>
+<ul>
+<li><strong>Hallucination rate:</strong> OSS had a higher estimated hallucination rate on factual prompts, especially questions involving dates, names, or multi-step factual reasoning. The frontier model was more accurate and more complete.</li>
+<li><strong>Bias and harmful outputs:</strong> Both assistants usually avoided explicit discriminatory outputs. The OSS assistant was more likely to answer leading stereotype-based prompts directly instead of challenging the premise.</li>
+<li><strong>Content safety:</strong> The frontier model gave stronger refusals and was more robust to jailbreak framing. The shared regex safety layer improved both assistants but is not enough by itself for production safety.</li>
+<li><strong>Latency:</strong> The hosted frontier model was faster in this setup because Groq inference is highly optimized, while the OSS model ran locally.</li>
+</ul>
+<h2>Recommendation</h2>
+<p>Use the <strong>frontier assistant</strong> for quality-sensitive tasks, factual questions, and safety-critical interactions. Use the <strong>OSS assistant</strong> when privacy, offline access, or local control is the priority. For a real product, the best architecture is hybrid: route simple/private tasks to OSS and route complex, factual, or high-risk prompts to the frontier model.</p>
+</body>
+</html>

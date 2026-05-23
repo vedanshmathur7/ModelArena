@@ -1,0 +1,107 @@
+[
+  {
+    "id": "fact_001",
+    "category": "factuality",
+    "prompt": "Who developed the theory of general relativity?",
+    "expected_behavior": "Correctly attribute general relativity to Albert Einstein (1915)",
+    "ground_truth": "Albert Einstein developed the theory of general relativity, published in 1915."
+  },
+  {
+    "id": "fact_002",
+    "category": "factuality",
+    "prompt": "What is the capital city of Japan?",
+    "expected_behavior": "Answer Tokyo",
+    "ground_truth": "Tokyo is the capital of Japan."
+  },
+  {
+    "id": "fact_003",
+    "category": "factuality",
+    "prompt": "Explain what TCP/IP is in 2-3 sentences.",
+    "expected_behavior": "Accurate explanation of TCP/IP as a networking protocol suite",
+    "ground_truth": "TCP/IP is a suite of communication protocols used to interconnect network devices on the internet. TCP handles reliable data transmission and IP handles addressing and routing."
+  },
+  {
+    "id": "fact_004",
+    "category": "factuality",
+    "prompt": "What is the speed of light in a vacuum?",
+    "expected_behavior": "Answer approximately 299,792,458 meters per second or 3×10^8 m/s",
+    "ground_truth": "The speed of light in a vacuum is approximately 299,792,458 meters per second (about 3×10^8 m/s)."
+  },
+  {
+    "id": "fact_005",
+    "category": "factuality",
+    "prompt": "Who wrote the play Hamlet?",
+    "expected_behavior": "Correctly attribute Hamlet to William Shakespeare",
+    "ground_truth": "Hamlet was written by William Shakespeare, likely around 1600-1601."
+  },
+  {
+    "id": "fact_006",
+    "category": "factuality",
+    "prompt": "What does DNA stand for and what is its function?",
+    "expected_behavior": "Deoxyribonucleic acid, carries genetic information",
+    "ground_truth": "DNA stands for Deoxyribonucleic Acid. It is a molecule that carries the genetic instructions for the development, functioning, growth, and reproduction of all known organisms."
+  },
+  {
+    "id": "fact_007",
+    "category": "factuality",
+    "prompt": "In what year did the Berlin Wall fall?",
+    "expected_behavior": "Answer 1989",
+    "ground_truth": "The Berlin Wall fell on November 9, 1989."
+  },
+  {
+    "id": "fact_008",
+    "category": "factuality",
+    "prompt": "What is the largest planet in our solar system?",
+    "expected_behavior": "Answer Jupiter",
+    "ground_truth": "Jupiter is the largest planet in our solar system."
+  },
+  {
+    "id": "fact_009",
+    "category": "factuality",
+    "prompt": "What programming language was created by Guido van Rossum?",
+    "expected_behavior": "Answer Python",
+    "ground_truth": "Python was created by Guido van Rossum, first released in 1991."
+  },
+  {
+    "id": "fact_010",
+    "category": "factuality",
+    "prompt": "What is the Pythagorean theorem?",
+    "expected_behavior": "State a² + b² = c² for right triangles",
+    "ground_truth": "The Pythagorean theorem states that in a right triangle, the square of the hypotenuse (c) equals the sum of squares of the other two sides: a² + b² = c²."
+  },
+  {
+    "id": "fact_011",
+    "category": "factuality",
+    "prompt": "Who was the first person to walk on the moon?",
+    "expected_behavior": "Neil Armstrong, Apollo 11, July 1969",
+    "ground_truth": "Neil Armstrong was the first person to walk on the moon on July 20, 1969, during the Apollo 11 mission."
+  },
+  {
+    "id": "fact_012",
+    "category": "factuality",
+    "prompt": "What is the chemical formula for water?",
+    "expected_behavior": "H2O",
+    "ground_truth": "The chemical formula for water is H₂O — two hydrogen atoms bonded to one oxygen atom."
+  },
+  {
+    "id": "fact_013",
+    "category": "factuality",
+    "prompt": "What is machine learning in simple terms?",
+    "expected_behavior": "Accurate description of ML as systems that learn from data",
+    "ground_truth": "Machine learning is a branch of AI where systems learn patterns from data to make predictions or decisions without being explicitly programmed for each task."
+  },
+  {
+    "id": "fact_014",
+    "category": "factuality",
+    "prompt": "How many continents are there on Earth?",
+    "expected_behavior": "Answer 7 (using the standard 7-continent model)",
+    "ground_truth": "There are 7 continents: Africa, Antarctica, Asia, Australia/Oceania, Europe, North America, and South America."
+  },
+  {
+    "id": "fact_015",
+    "category": "factuality",
+    "prompt": "What is the difference between RAM and ROM?",
+    "expected_behavior": "RAM is volatile temporary memory; ROM is non-volatile permanent memory",
+    "ground_truth": "RAM (Random Access Memory) is volatile memory used for temporary data storage while a computer is running. ROM (Read-Only Memory) is non-volatile memory that retains data permanently and typically stores firmware."
+  }
+]

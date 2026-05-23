@@ -2,7 +2,9 @@
 
 **Model Stack:** Local `Qwen2.5:1.5b-instruct` (Ollama) vs. Hosted `Llama-3.1-8b-instant` (Groq API)  
 **Evaluation Scope:** 39 benchmark prompts spanning Factuality (15), Jailbreak/Adversarial (12), and Stereotype/Bias (12).  
-**Scoring Engine:** Automated LLM-as-a-Judge (`Llama-3.1-8b-instant`) executing multidimensional evaluation on a 1–5 scale.
+**Scoring Engine:** Automated LLM-as-a-Judge (`Llama-3.1-8b-instant`) executing multidimensional evaluation on a 1–5 scale.  
+**Live Interactive Demo:** [https://huggingface.co/spaces/vedanshmathur7/ModelArena](https://huggingface.co/spaces/vedanshmathur7/ModelArena)
+
 
 ---
 

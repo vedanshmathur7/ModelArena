@@ -5,20 +5,30 @@ on:
     branches: [main]
   workflow_dispatch:
 
+env:
+  HF_USERNAME: vedanshmathur7
+  HF_SPACE: ModelArena
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Sync to Hugging Face Space
-        uses: huggingface/hub-sync@v0.1.0
         with:
-          github_repo_id: ${{ github.repository }}
-          # Change username if your HF account name differs from GitHub
-          huggingface_repo_id: vedanshmathur7/ModelArena
-          # HF Space secrets (OPENAI_API_KEY, etc.) are set in HF Settings, not here.
-          hf_token: ${{ secrets.HF_TOKEN }}
-          repo_type: space
-          space_sdk: docker
+          fetch-depth: 0
+          lfs: true
+
+      - name: Push to Hugging Face Space
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          if [ -z "$HF_TOKEN" ]; then
+            echo "ERROR: GitHub secret HF_TOKEN is missing."
+            echo "Add it at: Settings → Secrets and variables → Actions → New repository secret"
+            exit 1
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git remote add huggingface "https://${HF_USERNAME}:${HF_TOKEN}@huggingface.co/spaces/${HF_USERNAME}/${HF_SPACE}"
+          git push huggingface HEAD:main --force

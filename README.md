@@ -6,7 +6,6 @@ colorTo: indigo
 sdk: docker
 app_port: 7860
 pinned: false
-license: mit
 short_description: OSS vs frontier AI assistants side-by-side
 ---
 
